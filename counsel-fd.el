@@ -30,14 +30,13 @@
 (require 'counsel)
 
 (defcustom counsel-fd-base-command "fd -L -I --hidden -a --color never "
-  "Alternative to `counsel-fd-base-command' using ripgrep."
+  "FD command to invoke."
   :type 'string
   :group 'ivy)
 
 (defun counsel-fd-function (string base-cmd)
   "Grep in the current directory for STRING using BASE-CMD.
 If non-nil, append EXTRA-fd-ARGS to BASE-CMD."
-
   (or (counsel-more-chars)
       (let ((default-directory counsel-fd-current-dir)
             (regex (counsel-unquote-regex-parens
@@ -49,7 +48,7 @@ If non-nil, append EXTRA-fd-ARGS to BASE-CMD."
 
 ;;;###autoload
 (defun counsel-fd (&optional initial-input initial-directory fd-prompt fd-args)
-  "Grep for a string in the current directory using fd.
+  "Grep for file or directory in the current directory using fd.
 INITIAL-INPUT can be given as the initial minibuffer input.
 INITIAL-DIRECTORY, if non-nil, is used as the root directory for search.
 FD-ARGS string, if non-nil, is appended to `counsel-fd-base-command'.
@@ -70,7 +69,7 @@ FD-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
             :dynamic-collection t
             ;; :keymap counsel-ag-map
             :history #'counsel-git-grep-history
-            :action #'counsel-git-grep-action
+            :action #'counsel-find-file-action
             :unwind (lambda ()
                       (counsel-delete-process)
                       (swiper--cleanup))
