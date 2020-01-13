@@ -17,3 +17,7 @@ counsel interface for [[https://github.com/sharkdp/fd][fd]].
 ** Usage
 
 =M-x counsel-fd=
+
+
+Note : This project was created by Rashawn Zhang as its obvious from the fork.
+I made few tweaks and sumbitted to Melpa
