@@ -4,8 +4,7 @@ counsel interface for [[https://github.com/sharkdp/fd][fd]].
 
 ** Dependency
 - [[https://github.com/sharkdp/fd][fd]]
-- [[https://github.com/abo-abo/swiper#counsel][counsel
-]]
+-[[https://github.com/abo-abo/swiper#counsel][Counsel]]
 ** Installation
 
 - Melpa
