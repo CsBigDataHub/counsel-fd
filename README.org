@@ -1,2 +1,18 @@
-* counsel-fd
+* Counsel-fd
+
 counsel interface for [[https://github.com/sharkdp/fd][fd]].
+
+** Dependency
+- [[https://github.com/sharkdp/fd][fd]]
+- [[https://github.com/abo-abo/swiper#counsel][counsel
+]]
+** Installation
+
+- Melpa
+
+- Manual
+  + Clone this repo and load to path on your =.emacs= or =init.el= file
+
+** Usage
+
+=M-x counsel-fd=

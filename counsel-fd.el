@@ -1,12 +1,14 @@
 ;;; counsel-fd.el --- counsel interface for fd  -*- lexical-binding: t; -*-
 
-;; Copyright © 2018, Rashawn Zhang, all rights reserved.
+;; Copyright © 2020, Rashawn Zhang, Chetan Koneru tall rights reserved.
 
 ;; Version: 0.1.0
-;; URL: https://github.com/yqrashawn/counsel-fd
+;; URL: https://github.com/CsBigDataHub/counsel-fd
 ;; Package-Requires: ((emacs "24.4"))
 ;; Author: Rashawn Zhang <namy.19@gmail.com>
 ;; Created: 27 August 2018
+;; Modified: 07-January-2020
+;; Changed fd command and added a new ivy action
 ;; Keywords: tools
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -29,7 +31,7 @@
 ;;; Code:
 (require 'counsel)
 
-(defcustom counsel-fd-base-command "fd -L -I --hidden -a --color never "
+(defcustom counsel-fd-base-command "fd -HLia -t f --color never --exclude .git "
   "FD command to invoke."
   :type 'string
   :group 'ivy)
@@ -37,9 +39,9 @@
 (defun counsel-fd-function (string base-cmd)
   "Grep in the current directory for STRING using BASE-CMD.
 If non-nil, append EXTRA-fd-ARGS to BASE-CMD."
-  (or (counsel-more-chars)
+  (or (ivy-more-chars)
       (let ((default-directory counsel-fd-current-dir)
-            (regex (counsel-unquote-regex-parens
+            (regex (counsel--elisp-to-pcre
                     (setq ivy--old-re
                           (ivy--regex-plus string)))))
         (let* ((fd-cmd (concat (format base-cmd) (concat " " (s-wrap regex "'")))))
@@ -60,7 +62,7 @@ FD-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
                                  (car (split-string counsel-fd-base-command))
                                  " in directory: ")))))
   (counsel-require-program (car (split-string counsel-fd-base-command)))
-  (ivy-set-prompt 'counsel-fd counsel-prompt-function)
+  ;;(ivy-set-prompt 'counsel-fd counsel-prompt-function)
   (setq counsel-fd-current-dir (or initial-directory default-directory))
   (ivy-read (or fd-prompt (car (split-string counsel-fd-base-command)))
             (lambda (string)
@@ -68,11 +70,12 @@ FD-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
             :initial-input initial-input
             :dynamic-collection t
             ;; :keymap counsel-ag-map
-            :history #'counsel-git-grep-history
-            :action #'counsel-find-file-action
-            :unwind (lambda ()
-                      (counsel-delete-process)
-                      (swiper--cleanup))
+            ;;:history #'counsel-git-grep-history
+            :action (lambda (file)
+                      (with-ivy-window
+                        (when file
+                          (find-file file))))
+            :unwind #'counsel-delete-process
             :caller 'counsel-fd))
 
 (provide 'counsel-fd)
