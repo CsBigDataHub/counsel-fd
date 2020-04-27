@@ -1,12 +1,9 @@
 ;;; counsel-fd.el --- counsel interface for fd  -*- lexical-binding: t; -*-
 
-;; Copyright © 2020, Rashawn Zhang, Chetan Koneru tall rights reserved.
+;; Copyright © 2020, Chetan Koneru tall rights reserved.
 
 ;; Version: 0.1.0
 ;; URL: https://github.com/CsBigDataHub/counsel-fd
-;; Package-Requires: ((emacs "24.4"))
-;; Author: Rashawn Zhang <namy.19@gmail.com>
-;; Created: 27 August 2018
 ;; Modified: 07-January-2020
 ;; Changed fd command and added a new ivy action
 ;; Keywords: tools
@@ -31,52 +28,51 @@
 ;;; Code:
 (require 'counsel)
 
-(defcustom counsel-fd-base-command "fd -HLia -t f --color never --exclude .git "
-  "FD command to invoke."
-  :type 'string
-  :group 'ivy)
+(defvar counsel-fd-command "fd --hidden --color never "
+  "Base command for fd.")
 
-(defun counsel-fd-function (string base-cmd)
-  "Grep in the current directory for STRING using BASE-CMD.
-If non-nil, append EXTRA-fd-ARGS to BASE-CMD."
-  (or (ivy-more-chars)
-      (let ((default-directory counsel-fd-current-dir)
-            (regex (counsel--elisp-to-pcre
-                    (setq ivy--old-re
-                          (ivy--regex-plus string)))))
-        (let* ((fd-cmd (concat (format base-cmd) (concat " " (s-wrap regex "'")))))
-          (counsel--async-command fd-cmd)
-          nil))))
 
-;;;###autoload
-(defun counsel-fd (&optional initial-input initial-directory fd-prompt fd-args)
-  "Grep for file or directory in the current directory using fd.
+(defun counsel-fd-dired-jump (&optional initial-input initial-directory)
+  "Jump to a directory (in dired) below the current directory.
+List all subdirectories within the current directory.
 INITIAL-INPUT can be given as the initial minibuffer input.
-INITIAL-DIRECTORY, if non-nil, is used as the root directory for search.
-FD-ARGS string, if non-nil, is appended to `counsel-fd-base-command'.
-FD-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
+INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
   (interactive
    (list nil
          (when current-prefix-arg
-           (read-directory-name (concat
-                                 (car (split-string counsel-fd-base-command))
-                                 " in directory: ")))))
-  (counsel-require-program (car (split-string counsel-fd-base-command)))
-  ;;(ivy-set-prompt 'counsel-fd counsel-prompt-function)
-  (setq counsel-fd-current-dir (or initial-directory default-directory))
-  (ivy-read (or fd-prompt (car (split-string counsel-fd-base-command)))
-            (lambda (string)
-              (counsel-fd-function string (concat counsel-fd-base-command " " (or fd-args " "))))
-            :initial-input initial-input
-            :dynamic-collection t
-            ;; :keymap counsel-ag-map
-            ;;:history #'counsel-git-grep-history
-            :action (lambda (file)
-                      (with-ivy-window
-                        (when file
-                          (find-file file))))
-            :unwind #'counsel-delete-process
-            :caller 'counsel-fd))
+           (read-directory-name "From directory: "))))
+  (counsel-require-program "fd")
+  (let* ((default-directory (or initial-directory default-directory)))
+    (ivy-read "Directory: "
+              (split-string
+               (shell-command-to-string
+                (concat counsel-fd-command "--type d --exclude '*.git'"))
+               "\n" t)
+              :initial-input initial-input
+              :action (lambda (d) (dired-jump nil (expand-file-name d)))
+              :caller 'counsel-fd-dired-jump)))
+
+
+(defun counsel-fd-file-jump (&optional initial-input initial-directory)
+  "Jump to a file below the current directory.
+List all files within the current directory or any of its subdirectories.
+INITIAL-INPUT can be given as the initial minibuffer input.
+INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
+  (interactive
+   (list nil
+         (when current-prefix-arg
+           (read-directory-name "From directory: "))))
+  (counsel-require-program "fd")
+  (let* ((default-directory (or initial-directory default-directory)))
+    (ivy-read "Directory: "
+              (split-string
+               (shell-command-to-string
+                (concat counsel-fd-command "--type f --exclude '*.git'"))
+               "\n" t)
+              :initial-input initial-input
+              :action (lambda (d) (find-file (expand-file-name d)))
+              :caller 'counsel-fd-file-jump)))
 
 (provide 'counsel-fd)
+
 ;;; counsel-fd.el ends here
