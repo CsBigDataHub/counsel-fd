@@ -17,4 +17,5 @@ counsel interface for [[https://github.com/sharkdp/fd][fd]].
 ** Usage
 
 =M-x counsel-fd-dired-jump= to jump to a subdirectory under current directory
+
 =M-x counsel-fd-file-jump= to jump to a file under current directory
