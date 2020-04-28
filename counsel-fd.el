@@ -25,6 +25,7 @@
 
 ;;  counsel interface for fd
 
+;; Package-Requires: ((counsel "0.12.0"))
 ;;; Code:
 (require 'counsel)
 
