@@ -4,8 +4,7 @@
 
 ;; Version: 0.1.0
 ;; URL: https://github.com/CsBigDataHub/counsel-fd
-;; Modified: 07-January-2020
-;; Changed fd command and added a new ivy action
+;; Package-Requires: ((counsel "0.12.0"))
 ;; Keywords: tools
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -25,7 +24,6 @@
 
 ;;  counsel interface for fd
 
-;; Package-Requires: ((counsel "0.12.0"))
 ;;; Code:
 (require 'counsel)
 
