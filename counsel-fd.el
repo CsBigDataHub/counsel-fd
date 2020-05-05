@@ -63,7 +63,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
            (read-directory-name "From directory: "))))
   (counsel-require-program "fd")
   (let* ((default-directory (or initial-directory default-directory)))
-    (ivy-read "Directory: "
+    (ivy-read "File: "
               (split-string
                (shell-command-to-string
                 (concat counsel-fd-command "--type f --exclude '*.git'"))
