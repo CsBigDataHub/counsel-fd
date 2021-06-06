@@ -48,7 +48,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
                 (concat counsel-fd-command "--type d --exclude '*.git'"))
                "\n" t)
               :initial-input initial-input
-              :action (lambda (d) (dired-jump nil (expand-file-name d)))
+              :action (lambda (d) (dired-x-find-file (expand-file-name d)))
               :caller 'counsel-fd-dired-jump)))
 
 ;;;###autoload
