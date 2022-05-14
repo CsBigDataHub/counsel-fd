@@ -1,6 +1,6 @@
 ;;; counsel-fd.el --- counsel interface for fd  -*- lexical-binding: t; -*-
 
-;; Copyright © 2020, Chetan Koneru tall rights reserved.
+;; Copyright © 2020, Chetan Koneru all rights reserved.
 
 ;; Version: 0.1.0
 ;; URL: https://github.com/CsBigDataHub/counsel-fd
