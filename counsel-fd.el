@@ -40,7 +40,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
    (list nil
          (when current-prefix-arg
            (read-directory-name "From directory: "))))
-  (counsel-require-program "fd")
+  (counsel-require-program (car (split-string counsel-fd-command)))
   (let* ((default-directory (or initial-directory default-directory)))
     (ivy-read "Directory: "
               (split-string
@@ -61,7 +61,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
    (list nil
          (when current-prefix-arg
            (read-directory-name "From directory: "))))
-  (counsel-require-program "fd")
+  (counsel-require-program (car (split-string counsel-fd-command)))
   (let* ((default-directory (or initial-directory default-directory)))
     (ivy-read "File: "
               (split-string
